@@ -1,0 +1,5 @@
+[
+  { "input": "babad", "output": "bab" },
+  { "input": "cbbd", "output": "bb" },
+  { "input": "a", "output": "a" }
+]

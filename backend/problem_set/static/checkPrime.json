@@ -1,0 +1,5 @@
+[
+  { "input": "7", "output": "Yes" },
+  { "input": "10", "output": "No" },
+  { "input": "2", "output": "Yes" }
+]
