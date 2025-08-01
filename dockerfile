@@ -1,9 +1,9 @@
-#Stage 1: Build Frontend
+#Stage 1: Build frontend
 FROM node:18 AS build-stage
 
 WORKDIR /app
-COPY ./Frontend/package*.json/ /app/Frontend/
-WORKDIR /app/Frontend/
+COPY ./frontend/package*.json/ /app/frontend/
+WORKDIR /app/frontend/
 #nstalling dependencies
 RUN npm install
 
@@ -23,9 +23,9 @@ RUN pip install --upgrade pip
 RUN pip install -r ./backend/requirements.txt
 
 #Copying the frontend build to the backend static files
-COPY --from=build-stage ./app/Frontend/build /app/backend/bubbleCode/static/
-COPY --from=build-stage ./app/Frontend/build/static /app/backend/bubbleCode/static/
-COPY --from=build-stage ./app/Frontend/build/static/index.html /app/backend/bubbleCode/templates/index.html
+COPY --from=build-stage ./app/frontend/build /app/backend/bubbleCode/static/
+COPY --from=build-stage ./app/frontend/build/static /app/backend/bubbleCode/static/
+COPY --from=build-stage ./app/frontend/build/static/index.html /app/backend/bubbleCode/templates/index.html
 
 #Running the Django migrations
 RUN python ./backend/manage.py migrate
