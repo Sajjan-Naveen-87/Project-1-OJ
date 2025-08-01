@@ -24,8 +24,11 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
-# * should be removed in production 
+ALLOWED_HOSTS = [
+    'ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
+    # Add your custom domain here once you have one, e.g., 'www.yourdomain.com'
+]
+ 
 
 # Application definition
 
@@ -144,7 +147,8 @@ STATIC_FILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'http://ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
+    # Add your frontend's production domain here, e.g., 'https://www.yourdomain.com'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
