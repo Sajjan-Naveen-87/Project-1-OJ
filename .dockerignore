@@ -1,0 +1,8 @@
+# Ignore files and directories that should not be in the Docker image.
+
+.git
+.vscode
+__pycache__/
+*.pyc
+.env
+backend/bubbleCode/.env
