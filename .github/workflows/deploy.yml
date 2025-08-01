@@ -11,13 +11,13 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v3
 
     - name: Login to Dockerhub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -35,11 +35,21 @@ jobs:
         ssh-keyscan -H ${{ secrets.AWS_EC2_IP }} >> ~/.ssh/known_hosts
 
     - name: Deploy on AWS EC2 
+      # This step connects to your EC2 instance and runs the deployment commands.
       run: |
         ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_EC2_IP }} << 'EOF'
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          # Pull the latest version of the image from Docker Hub
           docker pull ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
+
+          # Stop and remove the old container if it exists to prevent conflicts
           docker stop bubblecode-backend || true
           docker rm bubblecode-backend || true
-          docker run -d --name bubblecode-backend -p 80:8000 ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
+
+          # Free up port 80 by stopping common web servers that might be running by default.
+          echo "Attempting to free up port 80..."
+          sudo systemctl stop apache2 || echo "Apache2 not running or not found."
+          sudo systemctl stop nginx || echo "Nginx not running or not found."
+
+          # Run the new container with the correct port mapping and environment variables
+          docker run -d --name bubblecode-backend -p 80:80 --env-file /home/ubuntu/bubbleCode/.env ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
         EOF
