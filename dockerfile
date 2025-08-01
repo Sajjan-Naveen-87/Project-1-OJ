@@ -1,42 +1,51 @@
-#Stage 1: Build frontend
-FROM node:18 AS build-stage
+# Stage 1: Build Frontend
+# Use a specific -alpine image for a smaller size and better security
+FROM node:18-alpine AS build-stage
 
+# Set working directory for the frontend build
 WORKDIR /app
-COPY ./frontend/package*.json/ /app/frontend/
-WORKDIR /app/frontend/
-#nstalling dependencies
+
+# Copy package files first to leverage Docker cache
+COPY ./frontend/package*.json ./
+
+# Installing dependencies
 RUN npm install
 
-#buliding the frontend
+# Copy the rest of the frontend source code
+COPY ./frontend/ ./
+
+# Building the frontend
 RUN npm run build
 
-#Stage 2: Build Backend
-FROM python:3.11.0 
+
+# Stage 2: Build and Run Backend
+# Use a -slim image for a smaller final image
+FROM python:3.11.0-slim
 
 # Set the environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
-COPY ./backend/ /app/backend/
-RUN pip install --upgrade pip
-RUN pip install -r ./backend/requirements.txt
 
-#Copying the frontend build to the backend static files
-COPY --from=build-stage ./app/frontend/build /app/backend/bubbleCode/static/
-COPY --from=build-stage ./app/frontend/build/static /app/backend/bubbleCode/static/
-COPY --from=build-stage ./app/frontend/build/static/index.html /app/backend/bubbleCode/templates/index.html
+# Copy requirements and install Python dependencies first to leverage caching
+COPY ./backend/requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-#Running the Django migrations
-RUN python ./backend/manage.py migrate
+# Copy the backend application code
+COPY ./backend/ .
 
-#Running the Django collectstatic command
-RUN python ./backend/manage.py collectstatic --no-input
+# Copying the frontend build artifacts to where Django can find them
+COPY --from=build-stage /app/build/index.html ./bubbleCode/templates/index.html
+COPY --from=build-stage /app/build/assets ./bubbleCode/static/assets
 
-#Expose the port
+# Running the Django migrations and collecting static files
+RUN python manage.py migrate
+RUN python manage.py collectstatic --no-input
+
+# Expose the port the app runs on
 EXPOSE 80
 
-WORKDIR /app/backend/
-#Start the Django server
+# Start the Django server using gunicorn
 CMD ["gunicorn", "bubbleCode.wsgi:application", "--bind", "0.0.0.0:80"]
-#
