@@ -7,7 +7,6 @@ const EditProfile = () => {
     const { username } = useParams();
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
-    const [token, setToken] = useState(""); // If using JWT
     const LoginUsername = localStorage.getItem('username');
     if (LoginUsername != username) {
         return (
@@ -22,10 +21,6 @@ const EditProfile = () => {
             </div>
         );
     }
-    useEffect(() => {
-        const storedToken = localStorage.getItem("accessToken"); // ✅ Fixed token key
-        if (storedToken) setToken(storedToken);
-    }, []);
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -76,6 +71,7 @@ const EditProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Important to prevent page reload
+        const storedToken = localStorage.getItem("accessToken");
 
         const data = new FormData();
         data.append("first_name", formData.first_name);
@@ -95,7 +91,7 @@ const EditProfile = () => {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        ...(token && { Authorization: `Bearer ${token}` }),
+                        ...(storedToken && { Authorization: `Bearer ${storedToken}` }),
                     },
                 }
             );
