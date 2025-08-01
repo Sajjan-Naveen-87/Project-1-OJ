@@ -26,6 +26,9 @@ FROM python:3.11.0-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Create a non-root user to run the application for better security
+RUN addgroup --system app && adduser --system --group app
+
 WORKDIR /app
 
 # Copy requirements and install Python dependencies first to leverage caching
@@ -40,8 +43,8 @@ COPY ./backend/ .
 COPY --from=build-stage /app/dist/index.html ./bubbleCode/templates/index.html
 COPY --from=build-stage /app/dist/assets ./bubbleCode/static/assets
 
-# Running the Django migrations and collecting static files
-RUN python manage.py migrate
+# The collectstatic command can also depend on the database in some cases.
+# We will move it to the entrypoint
 RUN python manage.py collectstatic --no-input
 
 # Expose the port the app runs on
