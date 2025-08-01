@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import defaultProfileImage from '../../../assets/ProfileImage/general-profile-image.png';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FuzzyText from '../../FuzzyText/FuzzyText';
 
-const Profile = ({ username }) => {
+const Profile = () => {
+    const { username } = useParams(); // Get username from the URL
     const [profile, setProfile] = useState(null);
     const navigate = useNavigate();
-    const LoginUsername = localStorage.getItem('username');
+    const LoginUsername = localStorage.getItem('username'); // Get the logged-in user's name
 
     if (LoginUsername !== username) {
         return (
@@ -20,7 +21,8 @@ const Profile = ({ username }) => {
     }
 
     useEffect(() => {
-        axios.get(`/api/v1/accounts/profile/${LoginUsername}/`)
+        // Fetch profile data using the username from the URL
+        axios.get(`/api/v1/accounts/profile/${username}/`)
             .then(res => setProfile(res.data))
             .catch(err => console.error('Error fetching profile:', err));
     }, [username]);

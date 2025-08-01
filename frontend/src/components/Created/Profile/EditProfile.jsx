@@ -37,7 +37,8 @@ const EditProfile = () => {
     });
 
     useEffect(() => {
-        axios.get(`/api/v1/accounts/profile/${LoginUsername}/`)
+        // Fetch profile data using the username from the URL for consistency
+        axios.get(`/api/v1/accounts/profile/${username}/`)
             .then(res => {
                 setProfile(res.data);
                 setFormData({
