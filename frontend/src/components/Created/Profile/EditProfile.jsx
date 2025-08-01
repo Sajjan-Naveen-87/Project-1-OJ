@@ -7,6 +7,7 @@ const EditProfile = () => {
     const { username } = useParams();
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
+    const [token, setToken] = useState(""); // If using JWT
     const LoginUsername = localStorage.getItem('username');
     if (LoginUsername != username) {
         return (
@@ -21,6 +22,10 @@ const EditProfile = () => {
             </div>
         );
     }
+    useEffect(() => {
+        const storedToken = localStorage.getItem("accessToken"); // ✅ Fixed token key
+        if (storedToken) setToken(storedToken);
+    }, []);
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -32,8 +37,7 @@ const EditProfile = () => {
     });
 
     useEffect(() => {
-        // Fetch profile data using the username from the URL for consistency
-        axios.get(`/api/v1/accounts/profile/${username}/`)
+        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${LoginUsername}/`)
             .then(res => {
                 setProfile(res.data);
                 setFormData({
@@ -71,7 +75,6 @@ const EditProfile = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault(); // Important to prevent page reload
-        const storedToken = localStorage.getItem("accessToken");
 
         const data = new FormData();
         data.append("first_name", formData.first_name);
@@ -86,12 +89,12 @@ const EditProfile = () => {
 
         try {
             await axios.put(
-                `/api/v1/accounts/profile/${username}/update/`,
+                `http://127.0.0.1:8000/api/v1/accounts/profile/${username}/update/`,
                 data,
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        ...(storedToken && { Authorization: `Bearer ${storedToken}` }),
+                        ...(token && { Authorization: `Bearer ${token}` }),
                     },
                 }
             );
