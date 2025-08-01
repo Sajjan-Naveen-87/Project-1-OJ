@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+ 
 from pathlib import Path
 from decouple import config
 import os
@@ -93,8 +93,8 @@ DATABASES = {
         'NAME': config('MYSQL_DB'),
         'USER': config('MYSQL_USER'),
         'PASSWORD': config('MYSQL_PASSWORD'),
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': config('MYSQL_HOST'),
+        'PORT': config('MYSQL_PORT'),
     }
 }
 
