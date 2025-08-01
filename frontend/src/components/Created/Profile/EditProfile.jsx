@@ -37,7 +37,7 @@ const EditProfile = () => {
     });
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${LoginUsername}/`)
+        axios.get(`/api/v1/accounts/profile/${LoginUsername}/`)
             .then(res => {
                 setProfile(res.data);
                 setFormData({
@@ -89,7 +89,7 @@ const EditProfile = () => {
 
         try {
             await axios.put(
-                `http://127.0.0.1:8000/api/v1/accounts/profile/${username}/update/`,
+                `/api/v1/accounts/profile/${username}/update/`,
                 data,
                 {
                     headers: {

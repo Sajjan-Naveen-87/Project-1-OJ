@@ -21,10 +21,10 @@ const Navbar = (props) => {
 
   useEffect(() => {
     if (isLoggedIn && username) {
-      axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${username}/`)
+      axios.get(`/api/v1/accounts/profile/${username}/`)
         .then(res => {
           if (res.data.image) {
-            setProfileImage(`http://127.0.0.1:8000${res.data.image}`);
+            setProfileImage(`${res.data.image}`);
           }
         })
         .catch(err => console.error('Error fetching profile image:', err));

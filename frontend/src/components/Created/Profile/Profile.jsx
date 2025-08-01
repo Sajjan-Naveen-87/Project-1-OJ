@@ -20,7 +20,7 @@ const Profile = ({ username }) => {
     }
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${LoginUsername}/`)
+        axios.get(`/api/v1/accounts/profile/${LoginUsername}/`)
             .then(res => setProfile(res.data))
             .catch(err => console.error('Error fetching profile:', err));
     }, [username]);
@@ -49,7 +49,7 @@ const Profile = ({ username }) => {
             <div className="flex items-center justify-between space-x-6">
                 <div className="flex items-center space-x-6">
                     <img
-                        src={image ? `http://127.0.0.1:8000/${image}` : defaultProfileImage}
+                        src={image ? `/${image}` : defaultProfileImage}
                         alt="Profile"
                         className="w-24 h-24 rounded-full object-cover border"
                     />

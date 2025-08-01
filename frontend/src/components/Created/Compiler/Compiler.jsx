@@ -26,7 +26,7 @@ const Compiler = () => {
     useEffect(() => {
         if (!id) return;
 
-        axios.get(`http://localhost:8000/api/v1/problems/${id}`)
+        axios.get(`/api/v1/problems/${id}`)
             .then((res) => {
                 setProblem(res.data);
                 decodeHtml(res.data.problem_desc);
@@ -60,7 +60,7 @@ const Compiler = () => {
     };
 
     const handleSubmit = () => {
-        axios.post(`http://127.0.0.1:8000/api/v1/compiler/submit/`, {
+        axios.post(`/api/v1/compiler/submit/`, {
             code,
             input_tests: input,
             problem_id: id,
@@ -81,7 +81,7 @@ const Compiler = () => {
     };
 
     const handleRun = () => {
-        axios.post(`http://127.0.0.1:8000/api/v1/compiler/`, {
+        axios.post(`/api/v1/compiler/`, {
             code,
             input_tests: input,
             problem_id: id,
@@ -105,7 +105,7 @@ const Compiler = () => {
         setAiLoading(true);
         setAiFeedback("");
         try {
-            const res = await axios.post("http://127.0.0.1:8000/api/v1/ai/analyze/", {
+            const res = await axios.post("/api/v1/ai/analyze/", {
                 prompt: `Review the following ${language} code for the problem titled: ${problem?.title}\nand my Code:${code}`
             });
             setAiFeedback(res.data.response || "No suggestions available.");

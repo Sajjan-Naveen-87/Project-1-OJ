@@ -54,7 +54,7 @@ export default function AnimatedProblemList() {
     const [bottomGradientOpacity, setBottomGradientOpacity] = useState(1);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/v1/problems/")
+        axios.get("/api/v1/problems/")
             .then((res) => {
                 const sorted = res.data.sort((a, b) =>
                     new Date(a.created_at) - new Date(b.created_at)
