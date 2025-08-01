@@ -1,15 +1,18 @@
 #!/bin/sh
 
 # This script is run when the container starts.
+# It ensures the database is ready, applies migrations, and collects static files
+# before starting the main application server.
 
-# The 'exec "$@"' command will run the CMD from the Dockerfile.
-# Before that, we can run some setup commands.
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
-# It's a good practice to wait for the database to be ready.
-# A more robust solution would use a tool like wait-for-it.sh or docker-compose's healthcheck.
+echo "Collecting static files..."
+python manage.py collectstatic --no-input
 
 echo "Applying database migrations..."
 python manage.py migrate
 
-# Now, execute the command passed to the script (the Dockerfile's CMD)
+echo "Starting Gunicorn server..."
+# Execute the command passed into this script (the Dockerfile's CMD)
 exec "$@"
