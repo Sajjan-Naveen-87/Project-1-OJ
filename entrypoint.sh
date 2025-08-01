@@ -1,18 +1,19 @@
 #!/bin/sh
 
-# This script is run when the container starts.
-# It ensures the database is ready, applies migrations, and collects static files
-# before starting the main application server.
-
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-echo "Collecting static files..."
-python manage.py collectstatic --no-input
+# Wait for the database to be ready.
+echo "--- Checking for database availability ---"
+python /app/wait_for_db.py
 
-echo "Applying database migrations..."
+# Apply database migrations
+echo "--- Applying database migrations ---"
 python manage.py migrate
 
-echo "Starting Gunicorn server..."
-# Execute the command passed into this script (the Dockerfile's CMD)
+# Collect static files
+echo "--- Collecting static files ---"
+python manage.py collectstatic --no-input
+
+echo "--- Starting Gunicorn server ---"
 exec "$@"
