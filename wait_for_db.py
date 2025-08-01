@@ -4,8 +4,8 @@ import time
 
 # Get DB host and port from environment variables.
 # These names MUST match the variables in your .env file.
-DB_HOST = os.environ.get('DATABASE_HOST', 'localhost')
-DB_PORT = int(os.environ.get('DATABASE_PORT', 3306))
+DB_HOST = os.environ.get('MYSQL_HOST', 'localhost')
+DB_PORT = int(os.environ.get('MYSQL_PORT', 3306))
 WAIT_TIMEOUT = 60  # seconds
 
 print(f"--- Waiting for database at {DB_HOST}:{DB_PORT}...")
