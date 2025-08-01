@@ -43,6 +43,9 @@ COPY ./backend/ .
 COPY --from=build-stage /app/dist/index.html ./bubbleCode/templates/index.html
 COPY --from=build-stage /app/dist/assets ./bubbleCode/static/assets
 
+# Copy the wait-for-db script
+COPY ./wait_for_db.py /app/wait_for_db.py
+
 # Copy the entrypoint script into the container
 COPY ./entrypoint.sh /app/entrypoint.sh
 
