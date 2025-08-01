@@ -37,8 +37,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY ./backend/ .
 
 # Copying the frontend build artifacts to where Django can find them
-COPY --from=build-stage /app/build/index.html ./bubbleCode/templates/index.html
-COPY --from=build-stage /app/build/assets ./bubbleCode/static/assets
+COPY --from=build-stage /app/dist/index.html ./bubbleCode/templates/index.html
+COPY --from=build-stage /app/dist/assets ./bubbleCode/static/assets
 
 # Running the Django migrations and collecting static files
 RUN python manage.py migrate
