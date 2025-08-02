@@ -40,8 +40,15 @@ RUN pip install --no-cache-dir --upgrade pip && \
 COPY ./backend/ .
 
 # Copying the frontend build artifacts to where Django can find them
+# First, create the directories if they don't exist
+RUN mkdir -p ./bubbleCode/static/assets ./bubbleCode/templates
+
+# Copy the built frontend files
 COPY --from=build-stage /app/dist/index.html ./bubbleCode/templates/index.html
 COPY --from=build-stage /app/dist/assets ./bubbleCode/static/assets
+
+# Also copy the public images directory
+COPY ./frontend/public/Images ./bubbleCode/static/Images
 
 # Copy the wait-for-db script
 COPY ./wait_for_db.py /app/wait_for_db.py

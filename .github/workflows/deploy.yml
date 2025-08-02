@@ -23,27 +23,36 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and push Docker image
-      run : |
+      run: |
+        echo "Building Docker image..."
         docker build -t ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest .
+        echo "Pushing Docker image to Docker Hub..."
         docker push ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
 
     - name: Setup SSH
       run: |
+        echo "Setting up SSH..."
         mkdir -p ~/.ssh/
         echo "${{ secrets.AWS_EC2_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.AWS_EC2_IP }} >> ~/.ssh/known_hosts
+        echo "Adding EC2 instance to known hosts..."
+        ssh-keyscan -H ${{ secrets.AWS_EC2_IP }} >> ~/.ssh/known_hosts 2>/dev/null || echo "Warning: Could not add host to known hosts"
 
     - name: Deploy on AWS EC2 
       # This step connects to your EC2 instance and runs the deployment commands.
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_EC2_IP }} << 'EOF'
+        echo "Deploying to EC2 instance at ${{ secrets.AWS_EC2_IP }}..."
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.AWS_EC2_IP }} << EOF
+          echo "Connected to EC2 instance"
+          
           # Pull the latest version of the image from Docker Hub
+          echo "Pulling latest Docker image..."
           docker pull ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
 
           # Stop and remove the old container if it exists to prevent conflicts
-          docker stop bubblecode-backend || true
-          docker rm bubblecode-backend || true
+          echo "Stopping and removing old container..."
+          docker stop bubblecode-backend || echo "No existing container to stop"
+          docker rm bubblecode-backend || echo "No existing container to remove"
 
           # Free up port 80 by stopping common web servers that might be running by default.
           echo "Attempting to free up port 80..."
@@ -57,5 +66,8 @@ jobs:
           sudo systemctl restart docker
 
           # Run the new container with the correct port mapping and environment variables
+          echo "Starting new container..."
           docker run -d --name bubblecode-backend -p 80:8000 --env-file /home/ubuntu/bubbleCode/.env ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
+          
+          echo "Deployment completed successfully!"
         EOF

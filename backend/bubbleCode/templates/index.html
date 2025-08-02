@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BubbleCode</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'Images/BubbleCodeLogo.png' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body class="bg-black text-white">
+    <div id="root"></div>
+    <!-- Vite built assets will be injected here -->
+    {% load static %}
+    <script type="module" src="{% static 'src/main.jsx' %}"></script>
+  </body>
+</html>
