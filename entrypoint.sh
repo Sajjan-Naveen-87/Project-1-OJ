@@ -21,5 +21,6 @@ chown -R app:app /app/media
 
 echo "--- Starting Gunicorn server ---"
 # Execute the main command (gunicorn) directly since we're already running as the 'app' user
-exec "$@" --bind 0.0.0.0:8000 --workers 4 --timeout 90
+# Add workers and timeout configuration
+exec "$@" --workers 4 --timeout 90
 
