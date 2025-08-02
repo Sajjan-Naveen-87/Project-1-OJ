@@ -62,4 +62,4 @@ EXPOSE 80
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Start the Django server using gunicorn
-CMD ["gunicorn", "bubbleCode.wsgi:application", "--bind", "0.0.0.0:80"]
+CMD ["gunicorn", "bubbleCode.wsgi:application", "--bind", "0.0.0.0:8000"]

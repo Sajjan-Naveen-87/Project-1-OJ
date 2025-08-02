@@ -57,5 +57,5 @@ jobs:
           sudo systemctl restart docker
 
           # Run the new container with the correct port mapping and environment variables
-          docker run -d --name bubblecode-backend -p 80:80 --env-file /home/ubuntu/bubbleCode/.env ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
+          docker run -d --name bubblecode-backend -p 8000:8000 --env-file /home/ubuntu/bubbleCode/.env ${{ secrets.DOCKER_USERNAME }}/bubblecode-backend:latest
         EOF
