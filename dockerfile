@@ -56,7 +56,7 @@ RUN chown -R app:app /app && chmod +x /app/entrypoint.sh
 USER app
 
 # Expose the port the app runs on
-EXPOSE 80
+EXPOSE 8000
 
 # Set the entrypoint to run startup tasks
 ENTRYPOINT ["/app/entrypoint.sh"]

@@ -26,7 +26,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
     'ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
+    'localhost',
+    '127.0.0.1',
     # Add your custom domain here once you have one, e.g., 'www.yourdomain.com'
+    # For production, you might want to use a wildcard for EC2 instances:
+    # '.compute.amazonaws.com',  # Allows all EC2 instances
 ]
  
 
@@ -158,8 +162,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     'http://ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
+    'http://localhost:5173',  # For local development
+    'http://localhost:8000',  # For local development
     # Add your frontend's production domain here, e.g., 'https://www.yourdomain.com'
 ]
+
+# For development, you might want to allow all origins (remove in production)
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
