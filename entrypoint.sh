@@ -21,5 +21,11 @@ chown -R app:app /app/media
 
 echo "--- Starting Gunicorn server ---"
 # Use gosu to drop privileges and execute the main command (gunicorn) as the 'app' user.
-exec gosu app "$@" --bind 0.0.0.0:8000 --workers 4 --timeout 90
+# Check if gosu is available, if not fall back to running as current user
+if command -v gosu >/dev/null 2>&1; then
+    exec gosu app "$@" --bind 0.0.0.0:8000 --workers 4 --timeout 90
+else
+    echo "Warning: gosu not found, running as current user"
+    exec "$@" --bind 0.0.0.0:8000 --workers 4 --timeout 90
+fi
 
