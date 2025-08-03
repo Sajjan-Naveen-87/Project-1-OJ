@@ -22,5 +22,5 @@ chown -R app:app /app/media
 echo "--- Starting Gunicorn server ---"
 # Execute the main command (gunicorn) directly since we're already running as the 'app' user
 # Add workers and timeout configuration
-exec "$@" --workers 4 --timeout 90
+exec gunicorn bubbleCode.wsgi:application --bind 0.0.0.0:80 --workers 4 --timeout 90
 

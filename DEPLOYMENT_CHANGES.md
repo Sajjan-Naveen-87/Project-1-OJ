@@ -24,6 +24,17 @@ EXPOSE 80
 EXPOSE 8000
 ```
 
+### 3. Gunicorn Command Fix
+**Problem**: Incorrect gunicorn command in entrypoint.sh
+**Fix**: Updated entrypoint.sh to use explicit gunicorn command
+```bash
+# Before
+exec "$@" --workers 4 --timeout 90
+
+# After
+exec gunicorn bubbleCode.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 90
+```
+
 ### 3. Django Settings Improvements
 **Problem**: Limited ALLOWED_HOSTS and CORS configuration
 **Fix**: Added more flexible configuration for different environments

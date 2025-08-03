@@ -38,6 +38,11 @@ docker build -t bubblecode-backend:latest .
 docker run -d --name bubblecode-backend -p 80:8000 --env-file ./backend/.env bubblecode-backend:latest
 ```
 
+### For HTTPS support (recommended):
+```bash
+docker run -d --name bubblecode-backend -p 80:8000 -p 443:8000 --env-file ./backend/.env bubblecode-backend:latest
+```
+
 ## CI/CD Pipeline
 The project uses GitHub Actions for continuous deployment to AWS EC2:
 
