@@ -63,6 +63,17 @@ COPY --from=build-stage /app/dist/assets ./bubbleCode/static/assets
 # Also copy the public images directory
 COPY ./frontend/public/Images ./bubbleCode/static/Images
 
+# Collect static files during the build to improve startup time.
+# Dummy environment variables are provided so Django settings can be loaded without error.
+# The database is not actually needed for this step.
+RUN SECRET_KEY=dummy-secret-for-build \
+    MYSQL_DB=dummy \
+    MYSQL_USER=dummy \
+    MYSQL_PASSWORD=dummy \
+    MYSQL_HOST=localhost \
+    MYSQL_PORT=3306 \
+    python manage.py collectstatic --noinput --clear
+
 # Copy the wait-for-db script
 COPY ./wait_for_db.py /app/wait_for_db.py
 
@@ -70,6 +81,7 @@ COPY ./wait_for_db.py /app/wait_for_db.py
 COPY ./entrypoint.sh /app/entrypoint.sh
 
 # Create media directory, change ownership of all files to the app user, and make the script executable
+# This now includes the 'staticfiles' directory created by collectstatic.
 RUN mkdir -p /app/media && \
     chown -R app:app /app && \
     chmod +x /app/entrypoint.sh

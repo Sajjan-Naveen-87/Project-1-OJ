@@ -11,9 +11,8 @@ python /app/wait_for_db.py
 echo "--- Applying database migrations ---"
 python manage.py migrate 
 
-# Collect static files
-echo "--- Collecting static files ---"
-python manage.py collectstatic --noinput --clear 
+# The 'collectstatic' command is now run during the Docker build process
+# to improve container startup speed.
 
 echo "--- Starting Gunicorn server ---"
 # Execute the main command (gunicorn) directly since we're already running as the 'app' user
