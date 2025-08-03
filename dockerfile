@@ -49,18 +49,6 @@ RUN apt-get update && \
 # Copy the backend application code
 COPY ./backend/ .
 
-# Copying the frontend build artifacts to where Django can find them
-# First, create the directories if they don't exist
-RUN mkdir -p ./bubbleCode/static/assets ./bubbleCode/templates
-
-# Copy the built frontend files
-COPY --from=build-stage /app/build/assets ./bubbleCode/static/assets
-COPY --from=build-stage /app/build/.vite/manifest.json ./bubbleCode/static/
-COPY --from=build-stage /app/build/index.html ./bubbleCode/templates/index.html
-
-# Also copy the public images directory
-COPY ./frontend/public/Images ./bubbleCode/static/Images
-
 # Collect static files during the build to improve startup time.
 # Dummy environment variables are provided so Django settings can be loaded without error.
 # The database is not actually needed for this step.
@@ -71,6 +59,18 @@ RUN SECRET_KEY=dummy-secret-for-build \
     MYSQL_HOST=localhost \
     MYSQL_PORT=3306 \
     python manage.py collectstatic --noinput --clear
+
+# Copying the frontend build artifacts to where Django can find them
+# First, create the directories if they don't exist
+RUN mkdir -p ./bubbleCode/static/assets ./bubbleCode/templates
+
+# Copy the built frontend files (these should be copied after collectstatic to avoid overwriting)
+COPY --from=build-stage /app/build/assets ./bubbleCode/static/assets
+COPY --from=build-stage /app/build/.vite/manifest.json ./bubbleCode/static/
+COPY --from=build-stage /app/build/index.html ./bubbleCode/templates/index.html
+
+# Also copy the public images directory
+COPY ./frontend/public/Images ./bubbleCode/static/Images
 
 # Copy the wait-for-db script
 COPY ./wait_for_db.py /app/wait_for_db.py

@@ -1,0 +1,15 @@
+{
+  "index.html": {
+    "file": "assets/index-C_G32Vn3.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "assets": [
+      "assets/general-profile-image-DPa60Qaz.png"
+    ]
+  },
+  "src/assets/ProfileImage/general-profile-image.png": {
+    "file": "assets/general-profile-image-DPa60Qaz.png",
+    "src": "src/assets/ProfileImage/general-profile-image.png"
+  }
+}
