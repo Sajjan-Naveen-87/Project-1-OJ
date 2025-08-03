@@ -26,21 +26,18 @@ FROM python:3.11.0-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install gosu for proper privilege handling
-RUN apt-get update && apt-get install -y --no-install-recommends gosu && rm -rf /var/lib/apt/lists/*
-
 # Create a non-root user to run the application for better security
 RUN addgroup --system app && adduser --system --group app
 
 WORKDIR /app
 
-# Copy requirements and install Python dependencies first to leverage caching
 COPY ./backend/requirements.txt .
 
-# Install build dependencies for packages like mysqlclient, install Python packages,
-# and then remove the build dependencies to keep the image small.
+# Install system dependencies (gosu, build tools) and Python packages in a single RUN command.
+# This optimizes the Docker build by reducing layers. Then, clean up build tools to keep the final image small.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        gosu \
         pkg-config \
         gcc \
         default-libmysqlclient-dev && \

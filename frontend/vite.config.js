@@ -5,12 +5,11 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    // This is the directory where the build output will be placed.
-    outDir: 'build', // Changed to 'build' to be more explicit
-    // Generate a manifest file for Django to read.
+    // This must match the directory used in the Dockerfile COPY commands.
+    outDir: 'build',
+    // This is crucial for Django integration. It creates the manifest.json file.
     manifest: true,
   },
-  // This is the crucial part. It tells Vite to prepend `/static/` to all asset paths.
-  // This ensures that the paths in the generated index.html match Django's STATIC_URL.
+  // This ensures asset paths in index.html are correct for Django's static file handling.
   base: '/static/',
 })
