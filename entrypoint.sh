@@ -15,12 +15,7 @@ python manage.py migrate
 echo "--- Collecting static files ---"
 python manage.py collectstatic --noinput --clear 
 
-# This is crucial for fixing permissions on the mounted volume for media files.
-# It ensures the 'app' user can write to it, preventing crashes on file uploads.
-chown -R app:app /app/media
-
 echo "--- Starting Gunicorn server ---"
 # Execute the main command (gunicorn) directly since we're already running as the 'app' user
 # Add workers and timeout configuration
-exec gunicorn bubbleCode.wsgi:application --bind 0.0.0.0:80 --workers 4 --timeout 90
-
+exec gunicorn bubbleCode.wsgi:application --bind 0.0.0.0:8000 --workers 4 --timeout 90

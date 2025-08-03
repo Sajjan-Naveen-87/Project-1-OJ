@@ -59,14 +59,15 @@ COPY ./wait_for_db.py /app/wait_for_db.py
 # Copy the entrypoint script into the container
 COPY ./entrypoint.sh /app/entrypoint.sh
 
-# Change ownership of all files to the app user and make the script executable
-RUN chown -R app:app /app && chmod +x /app/entrypoint.sh
+# Create media directory, change ownership of all files to the app user, and make the script executable
+RUN mkdir -p /app/media && \
+    chown -R app:app /app && \
+    chmod +x /app/entrypoint.sh
 
 # Switch to the non-root user
 USER app
 
 # Expose the port the app runs on
-EXPOSE 80
 EXPOSE 8000
 
 # Set the entrypoint to run startup tasks
