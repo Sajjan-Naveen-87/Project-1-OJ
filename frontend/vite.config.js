@@ -1,23 +1,14 @@
 import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-   tailwindcss(),
-  ],
-  assetsInclude: ['**/*.glb'],
+  plugins: [react()],
   build: {
+    // This is the directory where the build output will be placed.
     outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      output: {
-        entryFileNames: 'assets/[name].[hash].js',
-        chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
-      }
-    }
-  }
+  },
+  // This is the crucial part. It tells Vite to prepend `/static/` to all asset paths.
+  // This ensures that the paths in the generated index.html match Django's STATIC_URL.
+  base: '/static/',
 })
