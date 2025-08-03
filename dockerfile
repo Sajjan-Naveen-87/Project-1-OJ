@@ -54,9 +54,9 @@ COPY ./backend/ .
 RUN mkdir -p ./bubbleCode/static/assets ./bubbleCode/templates
 
 # Copy the built frontend files
-COPY --from=build-stage /app/build/index.html ./bubbleCode/templates/index.html
-COPY --from=build-stage /app/build/assets ./bubbleCode/static/assets
-COPY --from=build-stage /app/build/manifest.json ./bubbleCode/static/manifest.json
+COPY --from=build-stage /app/build/ ./bubbleCode/static/
+# Move the index.html to the templates directory so Django can render it.
+RUN mv ./bubbleCode/static/index.html ./bubbleCode/templates/index.html
 
 # Also copy the public images directory
 COPY ./frontend/public/Images ./bubbleCode/static/Images
