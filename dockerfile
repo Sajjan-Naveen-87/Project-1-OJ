@@ -36,8 +36,18 @@ WORKDIR /app
 
 # Copy requirements and install Python dependencies first to leverage caching
 COPY ./backend/requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+
+# Install build dependencies for packages like mysqlclient, install Python packages,
+# and then remove the build dependencies to keep the image small.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        pkg-config \
+        gcc \
+        default-libmysqlclient-dev && \
+    pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get purge -y --auto-remove gcc default-libmysqlclient-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the backend application code
 COPY ./backend/ .

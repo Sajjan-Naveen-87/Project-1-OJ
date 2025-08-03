@@ -24,14 +24,10 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'ec2-13-60-25-225.eu-north-1.compute.amazonaws.com',
-    'ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
-    'localhost',
-    '127.0.0.1',
-    '.compute.amazonaws.com',  # Allows all EC2 instances
-]
- 
+# Load a comma-separated string from the environment variable and split it into a list.
+# This is more flexible and secure than hardcoding.
+ALLOWED_HOSTS_str = config('ALLOWED_HOSTS', default='localhost,127.0.0.1')
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_str.split(',')]
 
 # Application definition
 
@@ -159,18 +155,10 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    'http://ec2-13-60-25-225.eu-north-1.compute.amazonaws.com',
-    'https://ec2-13-60-25-225.eu-north-1.compute.amazonaws.com',
-    'http://ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
-    'https://ec2-13-61-22-215.eu-north-1.compute.amazonaws.com',
-    'http://localhost:5173',  # For local development
-    'http://localhost:8000',  # For local development
-    # Add your frontend's production domain here, e.g., 'https://www.yourdomain.com'
-]
-
-# For development, you might want to allow all origins (remove in production)
-# CORS_ALLOW_ALL_ORIGINS = True
+# Load a comma-separated string from the environment variable for CORS origins.
+# This keeps your production domains out of your source code.
+CORS_ALLOWED_ORIGINS_str = config('CORS_ALLOWED_ORIGINS', default='http://localhost:5173,http://localhost:8000')
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS_str.split(',')]
 
 CORS_ALLOW_CREDENTIALS = True
 
